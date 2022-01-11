@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+import 'data/api.dart';
+import 'data/mise.dart';
+
+Future<void> main() async {
+  await dotenv.load(fileName: 'assets/env/.env');
+  // await DotEnv.load(fileName: 'assets/env/.env');
   runApp(const MyApp());
 }
 
@@ -27,9 +33,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: const Text(''),
       ),
-      body: Container(),
+      body: const Center(child: Text('')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          MiseApi api = MiseApi();
+          List<Mise> data = await api.getMiseData('중구');
+          data.removeWhere((m) => m.pm10 == 0); // clean the data
+        },
+      ),
     );
   }
 }
