@@ -6,7 +6,7 @@ import 'data/mise.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: 'assets/env/.env');
-  // await DotEnv.load(fileName: 'assets/env/.env');
+
   runApp(const MyApp());
 }
 
@@ -15,8 +15,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: const MyHomePage(),
     );
   }
 }
@@ -61,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    getSample();
+    getData();
   }
 
   @override
@@ -69,7 +73,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: getPage(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {},
+        onPressed: () async {
+          String l = await Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const LocationPage()));
+          stationName = l;
+          getData();
+        },
+        child: const Icon(Icons.location_on),
       ),
     );
   }
@@ -116,15 +125,113 @@ class _MyHomePageState extends State<MyHomePage> {
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14, color: Colors.white),
           ),
+          Expanded(
+            child: SizedBox(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: List.generate(
+                  data.length,
+                  (idx) {
+                    Mise mise = data[idx];
+                    int _status = getStatus(mise);
+
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            mise.dataTime.toString().replaceAll(' ', '\n'),
+                            style: const TextStyle(fontSize: 10, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                          Container(height: 8),
+                          SizedBox(
+                            height: 40,
+                            width: 40,
+                            child: Image.asset(icon[_status], fit: BoxFit.contain),
+                          ),
+                          Container(height: 8),
+                          Text('${mise.pm10}ug/m2', style: const TextStyle(fontSize: 10, color: Colors.white)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          Container(height: 100),
         ],
       ),
     );
   }
 
-  void getSample() async {
+  void getData() async {
     MiseApi api = MiseApi();
     data = await api.getMiseData(stationName);
     data.removeWhere((m) => m.pm10 == 0); // clean the data
     setState(() {});
+  }
+}
+
+class LocationPage extends StatefulWidget {
+  const LocationPage({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _LocationPageState();
+  }
+}
+
+class _LocationPageState extends State<LocationPage> {
+  List<String> locations = [
+    '강남구',
+    '강동구',
+    '강북구',
+    '강서구',
+    '관악구',
+    '광진구',
+    '구로구',
+    '금천구',
+    '노원구',
+    '도봉구',
+    '동대문구',
+    '동작구',
+    '마포구',
+    '서대문구',
+    '서초구',
+    '성동구',
+    '성북구',
+    '송파구',
+    '양천구',
+    '영등포구',
+    '용산구',
+    '은평구',
+    '종로구',
+    '중구',
+    '중랑구',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: ListView(
+        children: List.generate(
+          locations.length,
+          (idx) {
+            return ListTile(
+              title: Text(locations[idx]),
+              trailing: const Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.of(context).pop(locations[idx]);
+              },
+            );
+          },
+        ),
+      ),
+    );
   }
 }
