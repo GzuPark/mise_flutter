@@ -8,3 +8,9 @@
     ENDPOINT= # 한국환경공단_에어코리아_대기오염정보
     API_KEY=  # 일반 인증키 (Encoding)
     ```
+
+## Screenshots
+
+| ![](./assets/docs/0_main.png) | ![](./assets/docs/1_location.png) | ![](./assets/docs/2_chaged_location.png) |
+|:--:|:--:|:--:|
+| ![](./assets/docs/3_level_1.png) | ![](assets/docs/4_level_2.png) | ![](./assets/docs/5_level_3.png) |
