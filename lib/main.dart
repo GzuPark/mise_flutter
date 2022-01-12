@@ -1,6 +1,7 @@
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 import 'data/api.dart';
 import 'data/mise.dart';
@@ -82,6 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
           String l = await Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const LocationPage()));
           stationName = l;
           getData();
+
+          InAppReview.instance.requestReview();
         },
         child: const Icon(Icons.location_on),
       ),
