@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -5,6 +6,10 @@ import 'data/api.dart';
 import 'data/mise.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize without device test ids.
+  Admob.initialize();
+
   await dotenv.load(fileName: 'assets/env/.env');
 
   runApp(const MyApp());
@@ -161,6 +166,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
+          ),
+          AdmobBanner(
+            adUnitId: AdmobBanner.testAdUnitId,
+            // adUnitId: dotenv.env['AD_UNIT_ID'].toString(),
+            adSize: AdmobBannerSize.BANNER,
           ),
           Container(height: 100),
         ],
